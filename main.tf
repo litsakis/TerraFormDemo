@@ -121,3 +121,60 @@ resource "aws_instance" "eserver"{
     }
 
 }
+
+
+resource "aws_sns_topic" "sns-pair-1" {
+   
+
+     tags = {
+        Name: "${var.env_prefix}-sns-pair-1"
+    }
+}
+
+resource "aws_sns_topic" "sns-pair-2" {
+   
+
+       tags = {
+        Name: "${var.env_prefix}-sns-pair-2"
+    }
+}
+
+
+
+resource "aws_sqs_queue" "sqs-pair-1" {
+   
+  fifo_queue                  = true
+  content_based_deduplication = true
+
+       tags = {
+        Name: "${var.env_prefix}-sqs-pair-1"
+    }
+
+}
+
+resource "aws_sqs_queue" "sqs-pair-2" {
+   
+  fifo_queue                  = true
+  content_based_deduplication = true
+
+      tags = {
+        Name: "${var.env_prefix}-sqs-pair-2"
+    }
+}
+
+
+resource "aws_sns_topic_subscription" "sqs-subscription-pair-1" {
+  topic_arn = aws_sns_topic.sns-pair-1.arn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.sqs-pair-1.arn
+
+   
+}
+
+resource "aws_sns_topic_subscription" "sqs-subscription-pair-2" {
+  topic_arn = aws_sns_topic.sns-pair-2.arn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.sqs-pair-2.arn
+
+
+}
