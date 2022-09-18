@@ -115,6 +115,7 @@ resource "aws_instance" "eserver"{
     associate_public_ip_address = true
     key_name = "server-key-pair"
 
+    user_data =file("entry-script.sh")
      tags = {
         Name: "${var.env_prefix}-ec2"
     }
