@@ -113,7 +113,7 @@ resource "aws_instance" "eserver"{
     availability_zone=var.avail_zone
 
     associate_public_ip_address = true
-    key_name = "server-key-pair"
+    key_name = aws_key_pair.ssh-key.id
 
     user_data =file("entry-script.sh")
      tags = {
