@@ -1,12 +1,13 @@
 //terraform apply -var-file terraform-dev.tfvars
 provider "aws"{
-    region ="eu-west-3"
+    region =var.region
 
 
 }
 
     variable "xe_vpc_cidr_block"{}
     variable "xe_subnet_cidr"{}
+    variable "region"{}   
     variable "avail_zone"{}
     variable "env_prefix"{}
     variable "my_ip_adress"{}
@@ -61,8 +62,8 @@ resource "aws_default_security_group" "xe-demo-sg"{
             }
     ingress{
 
-        from_port=8080
-        to_port=8080
+        from_port=80
+        to_port=80
         protocol = "tcp"
         cidr_blocks=["0.0.0.0/0"]
             }        
@@ -114,6 +115,8 @@ resource "aws_instance" "eserver"{
 
     associate_public_ip_address = true
     key_name = aws_key_pair.ssh-key.id
+
+    iam_instance_profile = "${aws_iam_instance_profile.ec2-profile.name}"
 
     user_data =file("entry-script.sh")
      tags = {
@@ -177,4 +180,108 @@ resource "aws_sns_topic_subscription" "sqs-subscription-pair-2" {
   endpoint  = aws_sqs_queue.sqs-pair-2.arn
 
 
+}
+
+
+
+resource "aws_sqs_queue_policy" "updates-queue-policy-pair-1" {
+    queue_url = "${aws_sqs_queue.sqs-pair-1.id}"
+
+    policy = <<POLICY
+{
+  "Version": "2022-09-19",
+  "Id": "sqspolicy",
+  "Statement": [
+    {
+      "Sid": "pair1",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "sqs:SendMessage",
+      "Resource": "${aws_sqs_queue.sqs-pair-1.arn}",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "${aws_sns_topic.sns-pair-1.arn}"
+        }
+      }
+    }
+  ]
+}
+POLICY
+}
+
+
+
+resource "aws_sqs_queue_policy" "updates-queue-policy-pair-2" {
+    queue_url = "${aws_sqs_queue.sqs-pair-2.id}"
+
+    policy = <<POLICY
+{
+  "Version": ""2022-09-19",
+  "Id": "sqspolicy",
+  "Statement": [
+    {
+      "Sid": "pair2",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "sqs:SendMessage",
+      "Resource": "${aws_sqs_queue.sqs-pair-2.arn}",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "${aws_sns_topic.sns-pair-2.arn}"
+        }
+      }
+    }
+  ]
+}
+POLICY
+}
+
+
+resource "aws_iam_role" "ec2-role" {
+ 
+    name= "${var.env_prefix}-ec2-role"
+    assume_role_policy = <<EOF
+{
+  "Version": "2022-09-19",
+  "Statement": [
+    {
+        "Action": "sts:AssumeRole",
+        "Effect": "Allow",
+        "Principal": {
+            "Service": "ec2.amazonaws.com"
+        }
+    }
+  ]
+}
+EOF
+
+ tags = {
+        Name: "${var.env_prefix}-c2-"
+    }
+}
+
+
+resource "aws_iam_role_policy" "ec2-sqs-policy" {
+    name = "${var.env_prefix}-AllowSQSPermissions"
+    role = "${aws_iam_role.ec2-role.id}"
+    policy = <<EOF
+{
+  "Version": "2022-09-19",
+  "Statement": [
+    {
+      "Action": 
+        "sqs:*"
+      ,
+      "Effect": "Allow",
+      "Resource": ["${aws_sqs_queue.sqs-pair-1.arn}","${aws_sqs_queue.sqs-pair-2.arn}"]
+    }
+  ]
+}
+EOF
+}
+
+
+resource "aws_iam_instance_profile" "ec2-profile" {
+  name = "${var.env_prefix}-my-ec2-profile"
+  role = "${aws_iam_role.ec2-role.name}"
 }

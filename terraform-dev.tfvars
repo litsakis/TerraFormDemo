@@ -6,3 +6,4 @@ avail_zone="eu-west-3a" // only in eu-west-3 region
 my_ip_adress="79.131.133.23/32" // source ip which ssh will permited
 instance_type="t2.micro"
 my_public_key_loc="~/.ssh/id_rsa.pub"
+region="eu-west-3"
