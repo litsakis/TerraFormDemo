@@ -13,6 +13,11 @@ provider "aws"{
     variable "my_ip_adress"{}
     variable "instance_type"{}
     variable "my_public_key_loc"{}
+    variable "my_private_key_loc"{}
+    
+    variable "RedriveUrl"{}
+    variable "Timeout"{}
+    variable "ServiceUrl"{}
 
 resource "aws_vpc" "xe-demo-vpc"{
     cidr_block =var.xe_vpc_cidr_block //subnet ip address range
@@ -119,6 +124,29 @@ resource "aws_instance" "eserver"{
     iam_instance_profile = "${aws_iam_instance_profile.ec2-profile.name}"
 
     user_data =file("entry-script.sh")
+
+    connection {
+            type ="ssh"
+            host= self.associate_public_ip_address
+            user = "ec2-user"
+            private_key = file(var.my_private_key_loc)
+    }
+
+ # copies file from local directory to remote directory
+  provisioner "file" {
+    source      = "remote-script.sh"
+    destination = "~/awsredrive/remote-script.sh"
+  }
+
+
+    provisioner "remote-exec" {
+    
+    inline = [
+      "chmod +x ~/awsredrive/remote-script.sh",
+      "~/awsredrive/remote-script.sh ${local.params_for_inline_command}",
+    ]
+  }
+
      tags = {
         Name: "${var.env_prefix}-ec2"
     }
@@ -285,3 +313,7 @@ resource "aws_iam_instance_profile" "ec2-profile" {
   name = "${var.env_prefix}-my-ec2-profile"
   role = "${aws_iam_role.ec2-role.name}"
 }
+
+
+
+ 
