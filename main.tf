@@ -143,7 +143,7 @@ resource "aws_instance" "eserver"{
     
     inline = [
       "chmod +x ~/awsredrive/remote-script.sh",
-      "~/awsredrive/remote-script.sh ${local.params_for_inline_command}",
+      "~/awsredrive/remote-script.sh ${aws_sqs_queue.sqs-pair-1.url} ${var.RedriveUrl} ${var.region} true ${var.Timeout} ${var.ServiceUrl}",
     ]
   }
 
