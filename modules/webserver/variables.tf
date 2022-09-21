@@ -1,0 +1,14 @@
+variable my_vpc_id{}
+variable my_ip_adress{}
+variable env_prefix{}
+variable my_public_key_loc{}
+variable instance_type{}
+variable instance_profile{}
+variable my_private_key_loc{}
+variable sqsurl{}
+variable RedriveUrl{}
+variable region{}
+variable Timeout{}
+variable ServiceUrl{}
+variable subnet_id{}
+variable avail_zone{}
