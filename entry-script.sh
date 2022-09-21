@@ -1,9 +1,8 @@
 #!/bin/bash
 sudo yum update -y 
 sudo yum install unzip
-mkdir ~/awsredrive
-cd awsredrive
+cd /home/ec2-user
 wget https://github.com/nickntg/awsredrive.core/releases/latest/download/awsredrive.core.linux-service.zip
 unzip awsredrive.core.linux-service.zip 
-sudo chmod +x AWSRedrive.LinuxService
-sudo ./AWSRedrive.LinuxService > /dev/null &
+chmod +x AWSRedrive.LinuxService
+ ./AWSRedrive.LinuxService > /dev/null &

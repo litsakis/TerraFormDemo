@@ -1,6 +1,6 @@
 //terraform apply -var-file terraform-dev.tfvars
 provider "aws"{
-    region =var.region
+    region =var.region 
 
 
 }
@@ -8,23 +8,24 @@ provider "aws"{
  
 
 resource "aws_vpc" "xe-demo-vpc"{
-    cidr_block =var.xe_vpc_cidr_block //subnet ip address range
+    cidr_block =var.xe_vpc_cidr_block //vpc  ip address range
     tags = {
         Name: "${var.env_prefix}-vpc"
     }
 
 }
 
-module "myapp-subnet"{
+#gateway-subnet creator
+module "myapp-subnet"{ 
   source = "./modules/subnet"
-     xe_subnet_cidr=var.xe_subnet_cidr
+     xe_subnet_cidr=var.xe_subnet_cidr//subnet ip address range
     avail_zone=var.avail_zone
     env_prefix=var.env_prefix
-    vpc_id="aws_vpc.xe-demo-vpc.id"
-    default_route_table_id="aws_vpc.xe-demo-vpc.default_route_table_id"
+    vpc_id=aws_vpc.xe-demo-vpc.id
+    default_route_table_id=aws_vpc.xe-demo-vpc.default_route_table_id
 }
 
-
+# ec2 creator 
 module "webserver"{
   source = "./modules/webserver"
       my_vpc_id=aws_vpc.xe-demo-vpc.id
@@ -44,7 +45,7 @@ module "webserver"{
   
 }
 
-
+# creating a sns sqs pair and also create an ec2 iam profile
 module "sqssnspairs"{
   source = "./modules/sqssnspairs"
        env_prefix=var.env_prefix

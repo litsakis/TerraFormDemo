@@ -11,8 +11,6 @@ resource "aws_sns_topic" "sns-pair-1" {
 
 resource "aws_sqs_queue" "sqs-pair-1" {
    
-  fifo_queue                  = true
-  content_based_deduplication = true
 
        tags = {
         Name: "${var.env_prefix}-sqs-pair-1"
@@ -31,39 +29,13 @@ resource "aws_sns_topic_subscription" "sqs-subscription-pair-1" {
 
 
 
-resource "aws_sqs_queue_policy" "updates-queue-policy-pair-1" {
-    queue_url = "${aws_sqs_queue.sqs-pair-1.id}"
-
-    policy = <<POLICY
-{
-  "Version": "2022-09-19",
-  "Id": "sqspolicy",
-  "Statement": [
-    {
-      "Sid": "pair1",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "sqs:SendMessage",
-      "Resource": "${aws_sqs_queue.sqs-pair-1.arn}",
-      "Condition": {
-        "ArnEquals": {
-          "aws:SourceArn": "${aws_sns_topic.sns-pair-1.arn}"
-        }
-      }
-    }
-  ]
-}
-POLICY
-}
-
-
 
 resource "aws_iam_role" "ec2-role" {
  
     name= "${var.env_prefix}-ec2-role"
-    assume_role_policy = <<EOF
+    assume_role_policy = jsonencode(
 {
-  "Version": "2022-09-19",
+  "Version": "2012-10-17",
   "Statement": [
     {
         "Action": "sts:AssumeRole",
@@ -73,8 +45,8 @@ resource "aws_iam_role" "ec2-role" {
         }
     }
   ]
-}
-EOF
+})
+
 
  tags = {
         Name: "${var.env_prefix}-c2-"
@@ -87,7 +59,7 @@ resource "aws_iam_role_policy" "ec2-sqs-policy" {
     role = "${aws_iam_role.ec2-role.id}"
     policy = <<EOF
 {
-  "Version": "2022-09-19",
+  "Version": "2012-10-17",
   "Statement": [
     {
       "Action": 

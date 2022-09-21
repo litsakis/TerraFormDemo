@@ -67,7 +67,8 @@ resource "aws_instance" "eserver"{
 
     connection {
             type ="ssh"
-            host= self.associate_public_ip_address
+  //          host= self.associate_public_ip_address
+          host= self.public_ip
             user = "ec2-user"
             private_key = file(var.my_private_key_loc)
     }
@@ -75,15 +76,16 @@ resource "aws_instance" "eserver"{
  # copies file from local directory to remote directory
   provisioner "file" {
     source      = "remote-script.sh"
-    destination = "~/awsredrive/remote-script.sh"
+    destination = "/home/ec2-user/remote-script.sh"
   }
 
 
     provisioner "remote-exec" {
     
     inline = [
-      "chmod +x ~/awsredrive/remote-script.sh",
-      "~/awsredrive/remote-script.sh ${var.sqsurl} ${var.RedriveUrl} ${var.region} true ${var.Timeout} ${var.ServiceUrl}",
+        "cd /home/ec2-user/",
+      "chmod +x remote-script.sh",
+      ".remote-script.sh ${var.sqsurl} ${var.RedriveUrl} ${var.region} true ${var.Timeout} ${var.ServiceUrl}",
     ]
   }
 
