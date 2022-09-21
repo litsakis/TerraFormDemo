@@ -7,14 +7,6 @@ resource "aws_sns_topic" "sns-pair-1" {
     }
 }
 
-resource "aws_sns_topic" "sns-pair-2" {
-   
-
-       tags = {
-        Name: "${var.env_prefix}-sns-pair-2"
-    }
-}
-
 
 
 resource "aws_sqs_queue" "sqs-pair-1" {
@@ -28,16 +20,6 @@ resource "aws_sqs_queue" "sqs-pair-1" {
 
 }
 
-resource "aws_sqs_queue" "sqs-pair-2" {
-   
-  fifo_queue                  = true
-  content_based_deduplication = true
-
-      tags = {
-        Name: "${var.env_prefix}-sqs-pair-2"
-    }
-}
-
 
 resource "aws_sns_topic_subscription" "sqs-subscription-pair-1" {
   topic_arn = aws_sns_topic.sns-pair-1.arn
@@ -45,14 +27,6 @@ resource "aws_sns_topic_subscription" "sqs-subscription-pair-1" {
   endpoint  = aws_sqs_queue.sqs-pair-1.arn
 
    
-}
-
-resource "aws_sns_topic_subscription" "sqs-subscription-pair-2" {
-  topic_arn = aws_sns_topic.sns-pair-2.arn
-  protocol  = "sqs"
-  endpoint  = aws_sqs_queue.sqs-pair-2.arn
-
-
 }
 
 
@@ -82,32 +56,6 @@ resource "aws_sqs_queue_policy" "updates-queue-policy-pair-1" {
 POLICY
 }
 
-
-
-resource "aws_sqs_queue_policy" "updates-queue-policy-pair-2" {
-    queue_url = "${aws_sqs_queue.sqs-pair-2.id}"
-
-    policy = <<POLICY
-{
-  "Version": ""2022-09-19",
-  "Id": "sqspolicy",
-  "Statement": [
-    {
-      "Sid": "pair2",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "sqs:SendMessage",
-      "Resource": "${aws_sqs_queue.sqs-pair-2.arn}",
-      "Condition": {
-        "ArnEquals": {
-          "aws:SourceArn": "${aws_sns_topic.sns-pair-2.arn}"
-        }
-      }
-    }
-  ]
-}
-POLICY
-}
 
 
 resource "aws_iam_role" "ec2-role" {
@@ -146,7 +94,7 @@ resource "aws_iam_role_policy" "ec2-sqs-policy" {
         "sqs:*"
       ,
       "Effect": "Allow",
-      "Resource": ["${aws_sqs_queue.sqs-pair-1.arn}","${aws_sqs_queue.sqs-pair-2.arn}"]
+      "Resource": ["${aws_sqs_queue.sqs-pair-1.arn}"]
     }
   ]
 }
