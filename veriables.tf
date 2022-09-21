@@ -12,3 +12,4 @@
     variable "RedriveUrl"{}
     variable "Timeout"{}
     variable "ServiceUrl"{}
+    variable "stream_numbers"{type        = number }

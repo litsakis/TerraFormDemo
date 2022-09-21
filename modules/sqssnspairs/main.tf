@@ -1,28 +1,30 @@
 
 resource "aws_sns_topic" "sns-pair-1" {
-   
-
+   count=var.stream_numbers
+  
      tags = {
-        Name: "${var.env_prefix}-sns-pair-1"
+        Name: "${var.env_prefix}-sns-pair-${count.index}"
     }
 }
 
 
 
 resource "aws_sqs_queue" "sqs-pair-1" {
-   
+      count=var.stream_numbers
+
 
        tags = {
-        Name: "${var.env_prefix}-sqs-pair-1"
+        Name: "${var.env_prefix}-sqs-pair-${count.index}"
     }
 
 }
 
 
 resource "aws_sns_topic_subscription" "sqs-subscription-pair-1" {
-  topic_arn = aws_sns_topic.sns-pair-1.arn
+count =var.stream_numbers
+  topic_arn = aws_sns_topic.sns-pair-1[count.index].arn
   protocol  = "sqs"
-  endpoint  = aws_sqs_queue.sqs-pair-1.arn
+  endpoint  = aws_sqs_queue.sqs-pair-1[count.index].arn
 
    
 }
@@ -55,7 +57,8 @@ resource "aws_iam_role" "ec2-role" {
 
 
 resource "aws_iam_role_policy" "ec2-sqs-policy" {
-    name = "${var.env_prefix}-AllowSQSPermissions"
+  count=var.stream_numbers
+    name = "${var.env_prefix}-AllowSQSPermissions${count.index}"
     role = "${aws_iam_role.ec2-role.id}"
     policy = <<EOF
 {
@@ -66,7 +69,7 @@ resource "aws_iam_role_policy" "ec2-sqs-policy" {
         "sqs:*"
       ,
       "Effect": "Allow",
-      "Resource": ["${aws_sqs_queue.sqs-pair-1.arn}"]
+      "Resource": ["${aws_sqs_queue.sqs-pair-1[count.index].arn}"]
     }
   ]
 }
@@ -75,6 +78,7 @@ EOF
 
 
 resource "aws_iam_instance_profile" "ec2-profile" {
+  
   name = "${var.env_prefix}-my-ec2-profile"
   role = "${aws_iam_role.ec2-role.name}"
 }

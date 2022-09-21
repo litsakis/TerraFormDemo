@@ -11,3 +11,4 @@ region="eu-west-3"
 RedriveUrl="http://nohost.com/"
 Timeout="10000"
 ServiceUrl="https://www.google.com"
+stream_numbers=4 //sqs sns pairs

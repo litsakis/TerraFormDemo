@@ -35,7 +35,7 @@ module "webserver"{
       instance_type=var.instance_type
       instance_profile=module.sqssnspairs.ec2_iam_instance.name
       my_private_key_loc=var.my_private_key_loc
-      sqsurl=module.sqssnspairs.sns_sqs_pair.url
+      sqsurl=module.sqssnspairs.sns_sqs_pair[0].url
       RedriveUrl=var.RedriveUrl
       region=var.region
       Timeout=var.Timeout
@@ -49,6 +49,7 @@ module "webserver"{
 module "sqssnspairs"{
   source = "./modules/sqssnspairs"
        env_prefix=var.env_prefix
+        stream_numbers=var.stream_numbers
 
     
 }
