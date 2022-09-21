@@ -80,17 +80,18 @@ resource "aws_instance" "eserver"{
   }
 
 
+
     provisioner "remote-exec" {
     
     inline = [
         "cd /home/ec2-user/",
-      "chmod +x remote-script.sh",
-      ".remote-script.sh ${var.sqsurl} ${var.RedriveUrl} ${var.region} true ${var.Timeout} ${var.ServiceUrl}",
+      "chmod 700 remote-script.sh",
+      "sudo ./remote-script.sh ${var.sqsurl} ${var.RedriveUrl} ${var.region} false ${var.Timeout} ${var.ServiceUrl}",
     ]
   }
 
      tags = {
-        Name: "${var.env_prefix}-ec2"
+        Name: "${var.env_prefix}- ec2"
     }
 
 }

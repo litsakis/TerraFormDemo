@@ -53,3 +53,11 @@ module "sqssnspairs"{
     
 }
 
+module "ec2_instance_health_check" {
+  source = "github.com/terrablocks/aws-ec2-health-check.git"
+
+  alarm_type  = "instance"
+  alarm_name  = "web-server-instance-health-check"
+  instance_id = "${module.webserver.ec2module.id}"
+}
+
