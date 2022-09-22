@@ -9,10 +9,11 @@ how to run the terraform script?
    
 
     1)enviroment configured with an AWS Account 
-    2)Latest Terraform tool
-    3)You must generate your ssh key pairs of your working machine
+    2)Latest Terraform version
+    3)key pairs of working machine must be generated (required by ssh ) 
 
     update the terraform-dev.tfvars/terraform-stage.tfvars with your preference
+    please dont forget to change the my_ip_adress in tfvars!!! 
     run
     
     terraform apply -var-file terraform-dev.tfvars -lock=false #for dev env
