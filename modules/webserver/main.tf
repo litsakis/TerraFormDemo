@@ -76,7 +76,7 @@ resource "aws_instance" "eserver"{
             private_key = file(var.my_private_key_loc)
     }
 
- # copies file from local directory to remote directory
+ # copy file from local directory to remote directory
   provisioner "file" {
     source      = "remote-script.sh"
     destination = "/home/ec2-user/remote-script.sh"
