@@ -53,7 +53,8 @@ module "sqssnspairs"{
 
     
 }
-
+#creating a CloudWatch Alarm -making health checks to the ec2 -
+#recover for system health check alarm and reboot for instance health check alarm
 module "ec2_instance_health_check" {
   source = "github.com/terrablocks/aws-ec2-health-check.git"
 

@@ -1,4 +1,6 @@
+#the purpose of this module is to create as many pairs as it asked in tfvars
 
+#creating sns topic
 resource "aws_sns_topic" "sns-pair-1" {
    count=var.stream_numbers
   
@@ -8,7 +10,7 @@ resource "aws_sns_topic" "sns-pair-1" {
 }
 
 
-
+#creating sqs 
 resource "aws_sqs_queue" "sqs-pair-1" {
       count=var.stream_numbers
 
@@ -19,7 +21,7 @@ resource "aws_sqs_queue" "sqs-pair-1" {
 
 }
 
-
+#subscribe sns topic to sqs
 resource "aws_sns_topic_subscription" "sqs-subscription-pair-1" {
 count =var.stream_numbers
   topic_arn = aws_sns_topic.sns-pair-1[count.index].arn
@@ -31,7 +33,7 @@ count =var.stream_numbers
 
 
 
-
+#create an ec2 role
 resource "aws_iam_role" "ec2-role" {
  
     name= "${var.env_prefix}-ec2-role"
@@ -55,7 +57,7 @@ resource "aws_iam_role" "ec2-role" {
     }
 }
 
-
+#create a full rights iam policy for the sqs actions and attached to the role created before
 resource "aws_iam_role_policy" "ec2-sqs-policy" {
   count=var.stream_numbers
     name = "${var.env_prefix}-AllowSQSPermissions${count.index}"
@@ -76,7 +78,7 @@ resource "aws_iam_role_policy" "ec2-sqs-policy" {
 EOF
 }
 
-
+# creates an ec2 iam profile having the the iam role s (will be as many roles as many is the sns sqs pairs)
 resource "aws_iam_instance_profile" "ec2-profile" {
   
   name = "${var.env_prefix}-my-ec2-profile"

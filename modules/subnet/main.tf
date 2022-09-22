@@ -1,4 +1,5 @@
 
+# creates a subnet inside the VPC created before
 resource "aws_subnet" "xe-demo-subnet-1" {
     vpc_id=var.vpc_id
     cidr_block =var.xe_subnet_cidr
@@ -8,6 +9,7 @@ resource "aws_subnet" "xe-demo-subnet-1" {
     }
 }
 
+# route to the internet gateway
 resource "aws_default_route_table" "xe-demo-route-table"{
     default_route_table_id=var.default_route_table_id
     route{
@@ -19,6 +21,7 @@ resource "aws_default_route_table" "xe-demo-route-table"{
         Name: "${var.env_prefix}-route-table"
     }
 }
+#creates interner gateway for the VPC
 resource "aws_internet_gateway" "xe-demo-igw"{
     vpc_id=var.vpc_id
 
