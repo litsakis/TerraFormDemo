@@ -13,7 +13,7 @@ how to run the terraform script?
     3)key pairs of working machine must be generated (required by ssh ) 
 
     update the terraform-dev.tfvars/terraform-stage.tfvars with your preference
-    please dont forget to change the my_ip_adress in tfvars!!! 
+    please dont forget to change the my_ip_adress in tfvars!!! (if you forget it, its ok it will work, but its not safe longterm)
     run
     
     terraform apply -var-file terraform-dev.tfvars -lock=false #for dev env
