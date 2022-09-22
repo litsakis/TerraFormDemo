@@ -41,15 +41,23 @@ how to run the terraform script?
     *#   Timeout="10000" //app config
     *#   ServiceUrl="https://www.google.com"//app config
 
-> code summary The main.tf  contains the basic stracture, in particular 
-> *Declares the working region
-> *Creates networking infrastracture using the subnet module  >>using myapp-subnet module
-> *creates the sns sqs pairs (as many as we have declared in tfvars) and also create the IAM policy for the ec2 server >> using sqssnspairs
-> module
-> *creates the ec2 server, attach in the IAM policy created before, creates the security group for ssh and http, uploads always the latest
-> version of the awsredrive app
-> *demonize the app and sets up to start on  ec2 startup and generates a basic app config.json >> using webserver module
-> *set up a CloudWatch Alarm to check on ec2 health and reboot it if needed >> Open source Package used: module "ec2_instance_health_check"
+**code summary
+
+ - The main.tf  contains the basic stracture, in particular**
+
+
+
+   
+
+ 1. Declares the working region
+ 2. Creates networking infrastracture using the subnet module  >>using  myapp-subnet module
+ 3. Creates the sns sqs pairs (as many as we have declared in tfvars) and also create the IAM policy for the ec2 server >> using     sqssnspairs   module
+ 4. Creates the ec2 server, attach in the IAM policy created before, creates the security group for ssh and http, uploads always      the  latest  version of the awsredrive app
+ 
+ 5. Demonizes the app and sets up to start on  ec2 startup and generates
+    a basic app config.json >> using webserver module
+ 6. Sets up a CloudWatch Alarm to check on ec2 health and reboot it if  needed >> Open source Package used: module "ec2_instance_health_check"
+
 > 
 
 > 
