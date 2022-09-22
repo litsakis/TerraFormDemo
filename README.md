@@ -1,16 +1,16 @@
 
-# infrastructure for awsredrive app
+# Basic Infrastructure for awsredrive app
 
 how to run the terraform script?
 **Requirements**
 
    
 
-   1)enviroment configured with an AWS Account 
-        2)Latest Terraform tool
-        3)You must generate your ssh key pairs of your working machine
+   
 
-**if you need to deploy dev/stage environment**
+    1)enviroment configured with an AWS Account 
+    2)Latest Terraform tool
+    3)You must generate your ssh key pairs of your working machine
 
     update the terraform-dev.tfvars/terraform-stage.tfvars with your preference
     run
