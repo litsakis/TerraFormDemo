@@ -53,6 +53,16 @@ module "sqssnspairs"{
 
     
 }
+
+
+# setups Cloudwatch to log EC2 logs
+module "logwatch"{
+  source = "./modules/logwatch"
+  env_prefix=var.env_prefix
+  ec2module= "${module.webserver.ec2module.id}"
+  ec2_iam_role_id="${module.sqssnspairs.ec2_iam_role_id}"  
+}
+
 #creating a CloudWatch Alarm -making health checks to the ec2 -
 #recover for system health check alarm and reboot for instance health check alarm
 module "ec2_instance_health_check" {

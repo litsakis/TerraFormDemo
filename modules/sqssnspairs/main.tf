@@ -90,7 +90,7 @@ resource "aws_iam_role_policy" "ec2-sqs-policy" {
   name = "${var.env_prefix}-AllowSQSPermissions${count.index}"
   role = "${aws_iam_role.ec2-role.id}"
   policy = <<EOF
-  {
+{
   "Version": "2012-10-17",
   "Statement": [
     {
@@ -101,8 +101,8 @@ resource "aws_iam_role_policy" "ec2-sqs-policy" {
       "Resource": ["${aws_sqs_queue.sqs-pair-1[count.index].arn}"]
     }
   ]
-  }
-  EOF
+}
+EOF
 }
 
 # creates an ec2 iam profile having the the iam role s (will be as many roles as many is the sns sqs pairs)

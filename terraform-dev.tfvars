@@ -9,7 +9,7 @@ instance_type="t2.micro" // main server type
 my_public_key_loc="~/.ssh/id_rsa.pub"  // location of public rsa pair
 my_private_key_loc="~/.ssh/id_rsa"// location of private rsa pair
 region="eu-west-3" //select region to deploy
-stream_numbers=4 //sqs sns pairs
+stream_numbers=1 //sqs sns pairs
 
 //app settings
 RedriveUrl="http://nohost.com/" //app setings

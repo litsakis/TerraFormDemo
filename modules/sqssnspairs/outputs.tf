@@ -10,3 +10,8 @@ output "ec2_iam_instance" {
 
     value =aws_iam_instance_profile.ec2-profile
 }
+
+
+output "ec2_iam_role_id" {
+    value = aws_iam_role.ec2-role.id
+}
