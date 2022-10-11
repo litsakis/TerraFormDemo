@@ -8,9 +8,8 @@
     variable "my_private_key_loc"{}//private key location usually ~/.ssh/id_rsa 
     variable "xe_subnet_cidr"{} // subnet ip range
 
-
     variable "RedriveUrl"{}//app settings
     variable "Timeout"{}
     variable "ServiceUrl"{}
 
-    variable "stream_numbers"{type        = number }  // how many sns sqs pairs will be out there???
+    variable "stream_numbers"{type        = number }  // how many sns sqs pairs will be out there?
